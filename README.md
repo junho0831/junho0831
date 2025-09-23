@@ -23,7 +23,6 @@
 **프론트엔드**  
 <img src="https://img.shields.io/badge/JavaScript-yellow?style=for-the-badge&logo=JavaScript&logoColor=F7DF1E" /> 
 <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=Vue.js&logoColor=white" /> 
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white" /> 
 
 **데브옵스 및 기타**  
 <img src="https://img.shields.io/badge/GitLab-orange?style=for-the-badge&logo=gitlab" /> 
