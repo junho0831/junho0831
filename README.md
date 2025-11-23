@@ -2,12 +2,13 @@
 
 ### 👋 안녕하세요! 백엔드 개발자 박준호입니다.
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/KAN-JUNHO/KAN-JUNHO)](https://github.com/KAN-JUNHO/KAN-JUNHO)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/junho0831/junho0831)](https://github.com/junho0831/junho0831)
 
-![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=KAN-JUNHO&show_icons=true&theme=radical)
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=junho0831&show_icons=true&theme=radical)
 
 🌱 **현재 상태**: 백엔드 개발  
 📧 **이메일**: junho6667@gmail.com  
+🐙 **GitHub**: [github.com/junho0831](https://github.com/junho0831)
 
 ---
 
@@ -69,8 +70,8 @@
 
 | 프로젝트 | 내용 | 링크 |
 |----------|------|------|
-| **소모임 시스템 개발** | Spring Security 기반 인증/권한 관리(OAuth 2.0, JWT) 및 API 연동 | [GitHub](https://github.com/sandokgi/backend/tree/master) |
-| **알고리즘 스터디** | 알고리즘 문제 풀이 및 토론을 통한 문제 해결 능력 향상 | [GitHub](https://github.com/algorithm-sutudy) |
+| **소모임 시스템 개발** | Spring Security 기반 인증/권한 관리(OAuth 2.0, JWT) 및 API 연동 | [GitHub](https://github.com/junho0831/loopers-junho) |
+| **알고리즘 스터디** | 알고리즘 문제 풀이 및 토론을 통한 문제 해결 능력 향상 | [GitHub](https://github.com/junho0831/junho-algo-java) |
 | **GPT 활용 프로젝트** | OpenAI GPT 기반 백엔드 서비스 개발 | [GitHub](https://github.com/KAN-JUNHO/fastApiProject2) |
 
 ---
