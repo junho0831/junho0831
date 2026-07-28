@@ -1,12 +1,8 @@
-![header](https://capsule-render.vercel.app/api?text=오늘도_화이팅_넘치게_🚀&animation=fadeIn&type=Waving&color=gradient)
+![header](https://capsule-render.vercel.app/api?text=%EC%98%A4%EB%8A%98%EB%8F%84_%ED%99%94%EC%9D%B4%ED%8C%85_%EB%84%98%EC%B9%98%EA%B2%8C_%F0%9F%9A%80&animation=fadeIn&type=Waving&color=gradient)
 
 ### 👋 안녕하세요! 백엔드 개발자 박준호입니다.
 
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https://github.com/junho0831/junho0831)](https://github.com/junho0831/junho0831)
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=junho0831&show_icons=true&theme=radical" alt="junho0831 github stats" />
-</p>
+[![Hits](https://hits.sh/github.com/junho0831/junho0831.svg?style=flat-square&label=Views&color=555555&logo=github)](https://github.com/junho0831/junho0831)
 
 🌱 **현재 상태**: 백엔드 & 실시간 음성/미디어 인프라 개발  
 📝 **기술 블로그**: [so-dak.com](https://so-dak.com)  
@@ -122,7 +118,6 @@
 | **Voice-Link 음성 통화** | WebRTC, LiveKit, Redis 분산 락, SSE 기반 음성 통화 플랫폼 | - |
 | **So-Dak 기술 블로그** | 백엔드, WebRTC, 인프라 실무 기술 블로그 | [so-dak.com](https://so-dak.com) |
 | **소모임 시스템 개발** | OAuth 2.0 + JWT 인증, Spring Security 권한 관리 | [GitHub Link](https://github.com/junho0831/loopers-junho) |
-| **알고리즘 스터디** | 알고리즘 풀이 및 코드 리뷰 흐름 운영 | [GitHub Link](https://github.com/junho0831/junho-algo-java) |
 | **GPT 프로젝트** | OpenAI GPT 기반 API 서비스 개발 | [GitHub Link](https://github.com/KAN-JUNHO/fastApiProject2) |
 
 ---
