@@ -1,11 +1,11 @@
-![header](https://capsule-render.vercel.app/api?text=PARK%20JUNHO&desc=Data%20%26%20Batch%20Backend%20Engineer&animation=fadeIn&type=Waving&color=gradient)
+![header](https://capsule-render.vercel.app/api?text=PARK_JUNHO&animation=fadeIn&type=Waving&color=gradient)
 
 ### 안녕하세요. 데이터 정합성과 배치 안정성을 숫자로 증명하는 Data/Batch Backend Engineer 박준호입니다.
 
 [![Hits](https://hits.sh/github.com/junho0831/junho0831.svg?style=flat-square&label=Views&color=555555&logo=github)](https://github.com/junho0831/junho0831)
 
 Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow 기반 대용량 로그 파싱, PostgreSQL 청크 파티션 적재, 고동시성 분산 락 제어 및 장애 복구 자동화 시스템을 구축하고 있습니다.  
-약 **1,973만 건** 처리에서 청크 조회·파싱과 COPY 적재를 겹치는 파이프라인으로 처리 시간을 ![](https://img.shields.io/badge/30.6%25_단축-critical?style=flat-square) (`4,175초 → 2,896초`)했으며, 검색 장애 Fallback, Redis 원자적 선점(Lua Script), DB Outbox, 운영자 재처리 API 등 데이터 생성부터 장애 복구까지 이어지는 운영 흐름을 견고하게 설계해 왔습니다.
+약 **1,973만 건** 처리에서 청크 조회·파싱과 COPY 적재를 겹치는 파이프라인으로 처리 시간을 ![](https://img.shields.io/badge/30.6%25_단축-critical?style=flat-square) (`4,175초 → 2,896초`)했으며, 검색 장애 Fallback, Redis 원자적 선점(Lua Script), DB Outbox, 운영자 재처리 API 등 **데이터 생성부터 장애 복구까지 이어지는 운영 흐름**을 견고하게 설계해 왔습니다.
 
 - **현재 직무**: 엔셀 백엔드 개발자 (Data/Batch Backend)
 - **기술 블로그**: [so-dak.com](https://so-dak.com)
@@ -68,7 +68,7 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
   - 기존 Java 배치를 Python/Airflow DAG로 이관하며 `다운로드 ➔ 검증 ➔ 변환 ➔ 저장 ➔ 업로드 ➔ 원본 정리` 단계로 Task 분리
   - 업로드 성공 및 DB Commit 이후에만 원본 파일을 삭제하도록 순서를 고정하여 **장애 발생 시 데이터 유실 없는 재실행** 보장
   - `source_file` Unique Constraint와 UPSERT 적재 로직으로 **중복 적재 원천 차단**
-  - PostgreSQL Range Partition에 청크별 COPY 적재 및 파이프라이닝을 적용하여 **약 1,973만 건 처리 시간 30.6% 단축** (`4,175초 ➔ 2,896초`)
+  - PostgreSQL Range Partition에 청크별 COPY 적재 및 파이프라이닝을 적용하여 **약 1,973만 건 처리 시간 ![](https://img.shields.io/badge/30.6%25_단축-critical?style=flat-square)** (`4,175초 ➔ 2,896초`)
   - DIE 수율·불량 유형 및 반도체 EUV Root Cause 빈도를 일별 요약 테이블에 멱등(Idempotent) 집계
 
 #### 2. DataForge - Spring 검색 / 인증 / 관리 API
@@ -84,7 +84,7 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 - **핵심 역할 및 성과**:
   - API별 상이했던 오류 응답 포맷을 공통 예외 처리 계층(Global Exception Handler)으로 표준화
   - 반복 발생하던 운영 장애 케이스를 JUnit5/Mockito 회귀 테스트로 코드화
-  - **장애 분석 리드타임 70% 단축** (`40분 ➔ 12분`), **동일 오류 재발률 30% 감소**
+  - **장애 분석 리드타임 ![](https://img.shields.io/badge/70%25_단축-critical?style=flat-square)** (`40분 ➔ 12분`), **동일 오류 재발률 30% 감소**
 
 ---
 
@@ -94,13 +94,13 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 - **기술 스택**: `Java` `Spring Boot` `GitLab CI/CD` `Docker` `Nginx`
 - **핵심 역할 및 성과**:
   - GitLab CI/CD와 Docker 기반 빌드·테스트·배포 자동화 표준화 및 Nginx Staging 환경 구축
-  - **릴리스 리드타임 58% 단축** (`1시간 ➔ 25분`), **배포 실패율 0% 달성** (`5% ➔ 0%`)
+  - **릴리스 리드타임 ![](https://img.shields.io/badge/58%25_단축-critical?style=flat-square)** (`1시간 ➔ 25분`), **배포 실패율 ![](https://img.shields.io/badge/0%25_달성-critical?style=flat-square)** (`5% ➔ 0%`)
 
 #### 2. SmartQ - 사내 지식 RAG 검색 API
 - **기술 스택**: `Java` `Spring Boot` `OpenAI API` `LangChain` `FastAPI`
 - **핵심 역할 및 성과**:
   - 키워드 일치 검색 한계를 해결하기 위해 LangChain 기반 사내 지식 RAG API 구축
-  - **질의응답 정확도 80% 향상** (`60% ➔ 80%`), **답변 대기 시간 단축** (`5분 ➔ 1분`, 주당 12시간 절감)
+  - **질의응답 정확도 ![](https://img.shields.io/badge/80%25_향상-critical?style=flat-square)** (`60% ➔ 80%`), **답변 대기 시간 단축** (`5분 ➔ 1분`, 주당 12시간 절감)
 
 ---
 
@@ -111,7 +111,7 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 - **핵심 역할 및 성과**:
   - Crontab 기반 정기 배치 자동화 및 실행 이력/로그 추적 시스템 구축
   - 수동 DB 쿼리 방식을 운영자 Admin UI/API 재처리 방식으로 전환
-  - **데이터 정합성 이슈 0건 달성** (`월 3건 ➔ 0건`)
+  - **데이터 정합성 이슈 ![](https://img.shields.io/badge/0건_달성-critical?style=flat-square)** (`월 3건 ➔ 0건`)
 
 ---
 
