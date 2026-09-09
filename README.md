@@ -15,15 +15,15 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 
 ---
 
-## 📊 핵심 성과 매트릭스 (Key Performance Matrix)
+## 📊 핵심 성과 매트릭스 (Performance Matrix)
 
-| 도메인 / 프로젝트 | Before | After | 개선율 | 핵심 기술 및 엔지니어링 해결 방식 |
-| :--- | :---: | :---: | :---: | :--- |
-| **대용량 데이터 파이프라인** (`Prism`) | 4,175초 | **2,896초** | **30.6% 단축** | PostgreSQL Range Partition 청크 COPY 파이프라인 & 오버랩 실행 |
-| **장애 분석 리드타임** (`SMIP`) | 40분 | **12분** | **70% 단축** | 공통 예외 처리 계층(Global Exception Handler) 표준화 & 회귀 테스트 체계화 |
-| **배포 리드타임** (`KMS`) | 1시간 | **25분** | **58% 단축** | GitLab CI/CD & Docker 빌드·배포 자동화 표준화 (배포 실패율 5% ➔ 0%) |
-| **사내 RAG 검색** (`SmartQ`) | 60% / 5분 | **80% / 1분** | **정확도 +20%p** | LangChain RAG & Contextual Chunking 기반 질의응답 자동화 (주당 12시간 절감) |
-| **데이터 정합성** (`SafeCash`) | 월 3건 | **0건** | **100% 제거** | 정기 배치 자동화 및 운영자 수동 DB 개입 없는 Admin 재처리 API 구축 |
+| 프로젝트 / 영역 | 기존 (Before) | 개선 후 (After) | 핵심 기술 및 엔지니어링 해결 방식 |
+| :--- | :---: | :---: | :--- |
+| **대용량 파이프라인** (`Prism`)<br>약 1,973만 건 처리 시간 | 4,175초 | **2,896초 (30.6% 단축)** | PostgreSQL Range Partition 청크 COPY 스트리밍 & 파이프라인 오버랩 |
+| **장애 분석 리드타임** (`SMIP`)<br>장애 원인 규명 및 대응 | 40분 | **12분 (70% 단축)** | 공통 예외 처리 계층(Global Exception Handler) 표준화 & 회귀 테스트 체계화 |
+| **배포 리드타임** (`KMS`)<br>빌드·테스트·배포 주기 | 1시간 | **25분 (58% 단축)** | GitLab CI/CD & Docker 빌드·배포 자동화 표준화 (배포 실패율 5% ➔ 0%) |
+| **사내 RAG 검색** (`SmartQ`)<br>사내 지식 질의응답 | 60% / 5분 | **80% / 1분 (정확도 +20%p)** | LangChain RAG & Contextual Chunking 기반 자동화 (주당 12시간 절감) |
+| **데이터 정합성** (`SafeCash`)<br>월간 데이터 불일치 이슈 | 월 3건 | **0건 (100% 제거)** | 정기 배치 자동화 및 운영자 수동 DB 개입 없는 Admin 재처리 API 구축 |
 
 ---
 
@@ -63,38 +63,40 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 ### 1. VoiceLink - 고동시성 분산 매칭 및 실시간 미디어 파이프라인
 ```mermaid
 flowchart LR
-    subgraph Clients [Client Interaction]
-        A[User A]
-        B[User B]
+    subgraph Clients ["Client Interaction"]
+        A["User A"]
+        B["User B"]
     end
 
-    subgraph Concurrency_Engine [분산 락 & 무결성 엔진]
+    subgraph Concurrency_Engine ["분산 락 및 무결성 엔진"]
         direction TB
-        R[Redis ZSET & Presence TTL<br/><b>Lua Script 원자적 선점 (Atomic Claim)</b>]
-        CM[Cancel Marker 검증<br/><b>Stale 레이스 컨디션 차단</b>]
-        OB[(DB Outbox Table<br/><b>FOR UPDATE SKIP LOCKED</b>)]
-        PS[Redis Pub/Sub 브로커]
+        R["Redis ZSET 및 Presence TTL<br/>Lua Script 원자적 선점"]
+        CM["Cancel Marker 검증<br/>Stale 결과 즉시 폐기"]
+        OB[("DB Outbox Table<br/>FOR UPDATE SKIP LOCKED")]
+        PS["Redis Pub/Sub 브로커"]
         R --> CM --> OB --> PS
     end
 
-    subgraph Media_Cluster [1인 구축 실시간 미디어 인프라]
-        LK[LiveKit SFU Server<br/><b>Docker / Nginx Stream SNI</b>]
-        CT[coturn STUN/TURN<br/><b>대칭형 NAT 포트포워딩</b>]
+    subgraph Media_Cluster ["실시간 미디어 인프라"]
+        LK["LiveKit SFU Server<br/>Docker / Nginx Stream SNI"]
+        CT["coturn STUN/TURN<br/>대칭형 NAT 포트포워딩"]
     end
 
-    A & B -->|동시 매칭 요청| R
+    A -->|매칭 요청| R
+    B -->|매칭 요청| R
     PS -->|세션 생성 토큰 발급| LK
-    LK <-->|P2P / SFU WebRTC 통화| A & B
+    LK <-->|P2P / SFU WebRTC 통화| A
+    LK <-->|P2P / SFU WebRTC 통화| B
 ```
 
 ### 2. Prism - Airflow 대용량 데이터 처리 파이프라인
 ```mermaid
 flowchart LR
-    FTP[FTP 서버 원본 로그<br/>약 1,973만 건] -->|1. 청크 다운로드 & Task 격리| AF[Airflow DAG]
-    AF -->|2. 유효성 검증 & 파싱| Q[(Memory Stream Buffer)]
-    Q -->|3. COPY 파이프라인 오버랩| DB[(PostgreSQL Range Partition)]
-    DB -->|4. 트랜잭션 Commit 완료| CL[5. 원본 파일 안전 삭제]
-    DB -->|6. EUV/수율 멱등 집계| IDEM[(Daily Summary 요약 테이블)]
+    FTP["FTP 서버 원본 로그<br/>약 1,973만 건"] -->|1. 청크 스트리밍 다운로드| AF["Airflow DAG Worker"]
+    AF -->|2. 유효성 검증 및 파싱| Q[("Memory Stream Buffer")]
+    Q -->|3. COPY 파이프라인 오버랩| DB[("PostgreSQL Range Partition")]
+    DB -->|4. 트랜잭션 Commit 완료| CL["5. 원본 파일 안전 삭제"]
+    DB -->|6. EUV/수율 멱등 집계| IDEM[("Daily Summary 요약 적재")]
 ```
 
 ---
@@ -215,15 +217,6 @@ flowchart LR
 - 📌 **Redis Lua Script를 활용한 분산 환경 원자적 티켓팅/매칭 동시성 제어**
 - 📌 **DB Outbox 패턴과 `FOR UPDATE SKIP LOCKED`로 분산 이벤트 유실 0% 달성하기**
 - 📌 **대용량 데이터 스트리밍과 PostgreSQL COPY 파이프라인 튜닝 실무**
-
----
-
-## 📈 GitHub Activity & Stats
-
-<div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=junho0831&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" height="150" alt="GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=junho0831&layout=compact&theme=tokyonight&hide_border=true" height="150" alt="Top Languages" />
-</div>
 
 ---
 
