@@ -41,9 +41,14 @@ Java/Spring Boot 백엔드 엔지니어링 기반으로 Python/Airflow 대용량
 
 ## 기술 스택 (Tech Stack)
 
-- **Backend & Data**: `Java` `Spring Boot` `JPA` `Python` `PostgreSQL` `MySQL` `Redis` `Elasticsearch`
-- **Pipeline & DevOps**: `Airflow` `Docker` `GitLab CI/CD` `Nginx`
-- **Realtime & AI**: `WebRTC` `LiveKit SFU` `LangChain` `RAG`
+**Backend & Data**  
+<img src="https://img.shields.io/badge/Java-20232A?style=flat-square&logo=openjdk&logoColor=white"/> <img src="https://img.shields.io/badge/Spring_Boot-20232A?style=flat-square&logo=springboot&logoColor=white"/> <img src="https://img.shields.io/badge/JPA_/_Hibernate-20232A?style=flat-square&logo=hibernate&logoColor=white"/> <img src="https://img.shields.io/badge/Python-20232A?style=flat-square&logo=python&logoColor=white"/> <img src="https://img.shields.io/badge/PostgreSQL-20232A?style=flat-square&logo=postgresql&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-20232A?style=flat-square&logo=mysql&logoColor=white"/> <img src="https://img.shields.io/badge/Redis-20232A?style=flat-square&logo=redis&logoColor=white"/> <img src="https://img.shields.io/badge/Elasticsearch-20232A?style=flat-square&logo=elasticsearch&logoColor=white"/>
+
+**Pipeline & DevOps**  
+<img src="https://img.shields.io/badge/Apache_Airflow-20232A?style=flat-square&logo=apacheairflow&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-20232A?style=flat-square&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/GitLab_CI/CD-20232A?style=flat-square&logo=gitlab&logoColor=white"/> <img src="https://img.shields.io/badge/Nginx-20232A?style=flat-square&logo=nginx&logoColor=white"/>
+
+**Realtime & AI**  
+<img src="https://img.shields.io/badge/WebRTC-20232A?style=flat-square&logo=webrtc&logoColor=white"/> <img src="https://img.shields.io/badge/LiveKit_SFU-20232A?style=flat-square&logo=livekit&logoColor=white"/> <img src="https://img.shields.io/badge/LangChain-20232A?style=flat-square&logo=langchain&logoColor=white"/>
 
 ---
 
