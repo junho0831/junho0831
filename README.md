@@ -15,7 +15,7 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 
 ---
 
-## 📊 핵심 성과 매트릭스 (Performance Matrix)
+## 📊 핵심 성과 매트릭스 (Key Performance Matrix)
 
 | 프로젝트 / 영역 | 기존 (Before) | 개선 후 (After) | 핵심 기술 및 엔지니어링 해결 방식 |
 | :--- | :---: | :---: | :--- |
@@ -55,87 +55,6 @@ Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow
 <img src="https://img.shields.io/badge/OpenAI%20API-412991?style=for-the-badge&logo=openai&logoColor=white" /> 
 <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" /> 
 <img src="https://img.shields.io/badge/RAG-000000?style=for-the-badge" /> 
-
----
-
-## 🏗️ 시스템 아키텍처 (System Architecture)
-
-### 1. VoiceLink - 고동시성 분산 매칭 및 실시간 미디어 파이프라인
-```mermaid
-flowchart LR
-    subgraph Clients ["Client Interaction"]
-        A["User A"]
-        B["User B"]
-    end
-
-    subgraph Concurrency_Engine ["분산 락 및 무결성 엔진"]
-        direction TB
-        R["Redis ZSET 및 Presence TTL<br/>Lua Script 원자적 선점"]
-        CM["Cancel Marker 검증<br/>Stale 결과 즉시 폐기"]
-        OB[("DB Outbox Table<br/>FOR UPDATE SKIP LOCKED")]
-        PS["Redis Pub/Sub 브로커"]
-        R --> CM --> OB --> PS
-    end
-
-    subgraph Media_Cluster ["실시간 미디어 인프라"]
-        LK["LiveKit SFU Server<br/>Docker / Nginx Stream SNI"]
-        CT["coturn STUN/TURN<br/>대칭형 NAT 포트포워딩"]
-    end
-
-    A -->|매칭 요청| R
-    B -->|매칭 요청| R
-    PS -->|세션 생성 토큰 발급| LK
-    LK <-->|P2P / SFU WebRTC 통화| A
-    LK <-->|P2P / SFU WebRTC 통화| B
-```
-
-### 2. Prism - Airflow 대용량 데이터 처리 파이프라인
-```mermaid
-flowchart LR
-    FTP["FTP 서버 원본 로그<br/>약 1,973만 건"] -->|1. 청크 스트리밍 다운로드| AF["Airflow DAG Worker"]
-    AF -->|2. 유효성 검증 및 파싱| Q[("Memory Stream Buffer")]
-    Q -->|3. COPY 파이프라인 오버랩| DB[("PostgreSQL Range Partition")]
-    DB -->|4. 트랜잭션 Commit 완료| CL["5. 원본 파일 안전 삭제"]
-    DB -->|6. EUV/수율 멱등 집계| IDEM[("Daily Summary 요약 적재")]
-```
-
----
-
-## 🔍 심층 문제 해결 (Engineering Deep Dive)
-
-<details>
-<summary><b>🛠️ Deep Dive 1: 1,973만 건 대용량 파이프라인 처리 시간 30.6% 단축 기법</b> (클릭하여 펼치기)</summary>
-
-- **직면 과제**: 단일 트랜잭션 적재 및 일괄 처리 시 메모리 누수 위험과 DB I/O 락 병목 발생 (초기 4,175초 소요).
-- **해결 방안**:
-  1. **청크 파이프라이닝**: 서버사이드 커서 기반 스트리밍 조회와 PostgreSQL COPY 적재를 큐 기반으로 오버랩(Pipelining) 실행하여 I/O 대기 시간 제거.
-  2. **Range Partitioning**: 날짜별 파티션 테이블에 직접 COPY하여 대량 인덱스 갱신 부하 최소화.
-  3. **재실행 멱등성(Idempotency)**: `source_file` Unique Constraint와 UPSERT를 적용해 파이프라인 실패 재실행 시 중복 적재를 원천 차단하고, DB Commit 완료 후에만 원본 파일을 삭제하도록 파이프라인 순서 고정.
-- **성과**: 총 소요 시간 **4,175초 ➔ 2,896초로 30.6% 단축**, 메모리 사용량 안정화.
-</details>
-
-<details>
-<summary><b>🛠️ Deep Dive 2: 분산 환경 원자적 선점(Lua Script)과 stale 매칭 원천 방지</b> (클릭하여 펼치기)</summary>
-
-- **직면 과제**: 고동시성 환경에서 매칭 취소 직후 이전 대기열 데이터가 반환되거나, 네트워크 순단 시 유령 세션(Ghost Session)이 잔류하는 레이스 컨디션 발생.
-- **해결 방안**:
-  1. **Redis Lua Script**: 대기열 조회와 선점 마킹을 단일 원자적(Atomic) 연산으로 묶어 다중 워커 간의 중복 선점 방지.
-  2. **Cancel Marker 재검증**: 매칭 확정 직전 유저 상태를 재검증하여 stale 결과 즉시 폐기.
-  3. **DB Outbox + `FOR UPDATE SKIP LOCKED`**: 매칭 확정 트랜잭션과 이벤트 발행을 분리하여 노드 재시작 시에도 메시지 유실 0% 달성.
-  4. **비관적 락(`PESSIMISTIC_WRITE`) 직렬화**: LiveKit Webhook과 클라이언트 세션 종료 API 경합을 DB 수준에서 직렬화.
-- **성과**: 동시성 데이터 불일치 이슈 0건 달성 및 1인 인프라 안정 운영.
-</details>
-
-<details>
-<summary><b>🛠️ Deep Dive 3: Elasticsearch 장애 시 무중단 DB Fallback 검색 일관화</b> (클릭하여 펼치기)</summary>
-
-- **직면 과제**: 메인 검색 엔진인 Elasticsearch 클러스터 장애 발생 시 검색 서비스 전체가 중단되는 위험 존재.
-- **해결 방안**:
-  1. Search Service 계층에 Circuit Breaker 및 Fallback 검색 핸들러 설계.
-  2. ES 장애 감지 즉시 PostgreSQL 인덱스 기반 Fallback 쿼리로 자동 전환.
-  3. ES와 DB 쿼리 결과의 DTO 포맷 및 정렬/페이지네이션 정책을 일원화하여 클라이언트(사용자/운영자) 관점에서 동일한 응답 계약 유지.
-- **성과**: 검색 클러스터 장애 중에도 100% 서비스 가용성 보장 및 운영 관리 연속성 유지.
-</details>
 
 ---
 
