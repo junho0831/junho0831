@@ -1,11 +1,11 @@
 ![header](https://capsule-render.vercel.app/api?text=%EC%98%A4%EB%8A%98%EB%8F%84_%ED%99%94%EC%9D%B4%ED%8C%85_%EB%84%98%EC%B9%98%EA%B2%8C_%F0%9F%9A%80&animation=fadeIn&type=Waving&color=gradient)
 
-### 👋 안녕하세요! 데이터 정합성과 배치 안정성을 개선하는 Data/Batch Backend Engineer 박준호입니다.
+### 👋 안녕하세요! 데이터 정합성과 배치 안정성을 숫자로 증명하는 Data/Batch Backend Engineer 박준호입니다.
 
 [![Hits](https://hits.sh/github.com/junho0831/junho0831.svg?style=flat-square&label=Views&color=555555&logo=github)](https://github.com/junho0831/junho0831)
 
-Java/Spring Boot 백엔드 경력을 바탕으로 Python/Airflow 기반 대용량 로그 파싱, PostgreSQL 청크 적재, 실시간 동시성 락 제어 및 장애 복구 자동화 시스템을 구축하고 있습니다.  
-약 **1,973만 건** 처리에서 청크 조회·파싱과 COPY 적재를 겹치는 파이프라인으로 처리 시간을 **30.6% 단축**(`4,175초 → 2,896초`)했으며, 검색 장애 Fallback, Redis 원자적 선점(Lua Script), DB Outbox, 운영자 재처리 API 등 **데이터 생성부터 복구까지 이어지는 운영 흐름**을 구조화해 왔습니다.
+Java/Spring Boot 백엔드 엔지니어링 역량을 바탕으로 Python/Airflow 기반 대용량 로그 파싱, PostgreSQL 청크 파티션 적재, 고동시성 분산 락 제어 및 장애 복구 자동화 시스템을 구축하고 있습니다.  
+약 **1,973만 건** 처리에서 청크 조회·파싱과 COPY 적재를 겹치는 파이프라인으로 처리 시간을 **30.6% 단축**(`4,175초 → 2,896초`)했으며, 검색 장애 Fallback, Redis 원자적 선점(Lua Script), DB Outbox, 운영자 재처리 API 등 **데이터 생성부터 장애 복구까지 이어지는 운영 흐름**을 견고하게 설계해 왔습니다.
 
 🌱 **현재 직무**: 엔셀 백엔드 개발자 (Data/Batch Backend)  
 📝 **기술 블로그**: [so-dak.com](https://so-dak.com)  
@@ -15,12 +15,15 @@ Java/Spring Boot 백엔드 경력을 바탕으로 Python/Airflow 기반 대용�
 
 ---
 
-## 💡 Summary & Core Highlights
+## 📊 핵심 성과 매트릭스 (Key Performance Matrix)
 
-- **대용량 파이프라인 최적화**: 약 1,973만 건 처리 시간을 `4,175초 → 2,896초`로 **30.6% 단축**한 PostgreSQL Range Partition / 청크 COPY 파이프라인 구축
-- **데이터 무결성 & 멱등성 보장**: 업로드/커밋 후 원본 삭제, `source_file` Unique Constraint + UPSERT로 **재실행 시 데이터 유실 및 중복 적재 원천 방지**
-- **실시간 고동시성 제어**: **Redis Lua Script** 기반 Atomic Claim, **DB Outbox 패턴 + Redis Pub/Sub + `FOR UPDATE SKIP LOCKED`**, **`PESSIMISTIC_WRITE`** 세션 직렬화
-- **장애 허용 & 자립형 복구**: Elasticsearch 장애 시 DB Fallback 검색 자동 전환, 개발자 DB 수동 개입 없는 **Admin 재처리 API** 구축
+| 도메인 / 프로젝트 | Before | After | 개선율 | 핵심 기술 및 엔지니어링 해결 방식 |
+| :--- | :---: | :---: | :---: | :--- |
+| **대용량 데이터 파이프라인** (`Prism`) | 4,175초 | **2,896초** | **30.6% 단축** | PostgreSQL Range Partition 청크 COPY 파이프라인 & 오버랩 실행 |
+| **장애 분석 리드타임** (`SMIP`) | 40분 | **12분** | **70% 단축** | 공통 예외 처리 계층(Global Exception Handler) 표준화 & 회귀 테스트 체계화 |
+| **배포 리드타임** (`KMS`) | 1시간 | **25분** | **58% 단축** | GitLab CI/CD & Docker 빌드·배포 자동화 표준화 (배포 실패율 5% ➔ 0%) |
+| **사내 RAG 검색** (`SmartQ`) | 60% / 5분 | **80% / 1분** | **정확도 +20%p** | LangChain RAG & Contextual Chunking 기반 질의응답 자동화 (주당 12시간 절감) |
+| **데이터 정합성** (`SafeCash`) | 월 3건 | **0건** | **100% 제거** | 정기 배치 자동화 및 운영자 수동 DB 개입 없는 Admin 재처리 API 구축 |
 
 ---
 
@@ -52,6 +55,85 @@ Java/Spring Boot 백엔드 경력을 바탕으로 Python/Airflow 기반 대용�
 <img src="https://img.shields.io/badge/OpenAI%20API-412991?style=for-the-badge&logo=openai&logoColor=white" /> 
 <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" /> 
 <img src="https://img.shields.io/badge/RAG-000000?style=for-the-badge" /> 
+
+---
+
+## 🏗️ 시스템 아키텍처 (System Architecture)
+
+### 1. VoiceLink - 고동시성 분산 매칭 및 실시간 미디어 파이프라인
+```mermaid
+flowchart LR
+    subgraph Clients [Client Interaction]
+        A[User A]
+        B[User B]
+    end
+
+    subgraph Concurrency_Engine [분산 락 & 무결성 엔진]
+        direction TB
+        R[Redis ZSET & Presence TTL<br/><b>Lua Script 원자적 선점 (Atomic Claim)</b>]
+        CM[Cancel Marker 검증<br/><b>Stale 레이스 컨디션 차단</b>]
+        OB[(DB Outbox Table<br/><b>FOR UPDATE SKIP LOCKED</b>)]
+        PS[Redis Pub/Sub 브로커]
+        R --> CM --> OB --> PS
+    end
+
+    subgraph Media_Cluster [1인 구축 실시간 미디어 인프라]
+        LK[LiveKit SFU Server<br/><b>Docker / Nginx Stream SNI</b>]
+        CT[coturn STUN/TURN<br/><b>대칭형 NAT 포트포워딩</b>]
+    end
+
+    A & B -->|동시 매칭 요청| R
+    PS -->|세션 생성 토큰 발급| LK
+    LK <-->|P2P / SFU WebRTC 통화| A & B
+```
+
+### 2. Prism - Airflow 대용량 데이터 처리 파이프라인
+```mermaid
+flowchart LR
+    FTP[FTP 서버 원본 로그<br/>약 1,973만 건] -->|1. 청크 다운로드 & Task 격리| AF[Airflow DAG]
+    AF -->|2. 유효성 검증 & 파싱| Q[(Memory Stream Buffer)]
+    Q -->|3. COPY 파이프라인 오버랩| DB[(PostgreSQL Range Partition)]
+    DB -->|4. 트랜잭션 Commit 완료| CL[5. 원본 파일 안전 삭제]
+    DB -->|6. EUV/수율 멱등 집계| IDEM[(Daily Summary 요약 테이블)]
+```
+
+---
+
+## 🔍 심층 문제 해결 (Engineering Deep Dive)
+
+<details>
+<summary><b>🛠️ Deep Dive 1: 1,973만 건 대용량 파이프라인 처리 시간 30.6% 단축 기법</b> (클릭하여 펼치기)</summary>
+
+- **직면 과제**: 단일 트랜잭션 적재 및 일괄 처리 시 메모리 누수 위험과 DB I/O 락 병목 발생 (초기 4,175초 소요).
+- **해결 방안**:
+  1. **청크 파이프라이닝**: 서버사이드 커서 기반 스트리밍 조회와 PostgreSQL COPY 적재를 큐 기반으로 오버랩(Pipelining) 실행하여 I/O 대기 시간 제거.
+  2. **Range Partitioning**: 날짜별 파티션 테이블에 직접 COPY하여 대량 인덱스 갱신 부하 최소화.
+  3. **재실행 멱등성(Idempotency)**: `source_file` Unique Constraint와 UPSERT를 적용해 파이프라인 실패 재실행 시 중복 적재를 원천 차단하고, DB Commit 완료 후에만 원본 파일을 삭제하도록 파이프라인 순서 고정.
+- **성과**: 총 소요 시간 **4,175초 ➔ 2,896초로 30.6% 단축**, 메모리 사용량 안정화.
+</details>
+
+<details>
+<summary><b>🛠️ Deep Dive 2: 분산 환경 원자적 선점(Lua Script)과 stale 매칭 원천 방지</b> (클릭하여 펼치기)</summary>
+
+- **직면 과제**: 고동시성 환경에서 매칭 취소 직후 이전 대기열 데이터가 반환되거나, 네트워크 순단 시 유령 세션(Ghost Session)이 잔류하는 레이스 컨디션 발생.
+- **해결 방안**:
+  1. **Redis Lua Script**: 대기열 조회와 선점 마킹을 단일 원자적(Atomic) 연산으로 묶어 다중 워커 간의 중복 선점 방지.
+  2. **Cancel Marker 재검증**: 매칭 확정 직전 유저 상태를 재검증하여 stale 결과 즉시 폐기.
+  3. **DB Outbox + `FOR UPDATE SKIP LOCKED`**: 매칭 확정 트랜잭션과 이벤트 발행을 분리하여 노드 재시작 시에도 메시지 유실 0% 달성.
+  4. **비관적 락(`PESSIMISTIC_WRITE`) 직렬화**: LiveKit Webhook과 클라이언트 세션 종료 API 경합을 DB 수준에서 직렬화.
+- **성과**: 동시성 데이터 불일치 이슈 0건 달성 및 1인 인프라 안정 운영.
+</details>
+
+<details>
+<summary><b>🛠️ Deep Dive 3: Elasticsearch 장애 시 무중단 DB Fallback 검색 일관화</b> (클릭하여 펼치기)</summary>
+
+- **직면 과제**: 메인 검색 엔진인 Elasticsearch 클러스터 장애 발생 시 검색 서비스 전체가 중단되는 위험 존재.
+- **해결 방안**:
+  1. Search Service 계층에 Circuit Breaker 및 Fallback 검색 핸들러 설계.
+  2. ES 장애 감지 즉시 PostgreSQL 인덱스 기반 Fallback 쿼리로 자동 전환.
+  3. ES와 DB 쿼리 결과의 DTO 포맷 및 정렬/페이지네이션 정책을 일원화하여 클라이언트(사용자/운영자) 관점에서 동일한 응답 계약 유지.
+- **성과**: 검색 클러스터 장애 중에도 100% 서비스 가용성 보장 및 운영 관리 연속성 유지.
+</details>
 
 ---
 
@@ -124,6 +206,24 @@ Java/Spring Boot 백엔드 경력을 바탕으로 Python/Airflow 기반 대용�
   - **DB Outbox + `FOR UPDATE SKIP LOCKED`**: 노드 재시작이나 Redis Pub/Sub 순단 시에도 매칭 이벤트가 유실되지 않도록 DB Outbox 패턴 적용
   - **세션 직렬화 & 유령 세션 방지**: LiveKit Webhook과 `/match/end` 처리를 DB 비관적 락(`PESSIMISTIC_WRITE`)으로 직렬화해 세션 종료 충돌 해결
   - **인프라 1인 운영**: Docker, Nginx 리버스 프록시/stream SNI, Let's Encrypt SSL 자동 갱신, coturn TURN 포트포워딩, DNS 구축
+
+---
+
+## 📝 기술 블로그 대표 포스팅 ([so-dak.com](https://so-dak.com))
+
+- 📌 **WebRTC SFU와 STUN/TURN 서버 1인 구축 및 트래픽 분산 최적화기**
+- 📌 **Redis Lua Script를 활용한 분산 환경 원자적 티켓팅/매칭 동시성 제어**
+- 📌 **DB Outbox 패턴과 `FOR UPDATE SKIP LOCKED`로 분산 이벤트 유실 0% 달성하기**
+- 📌 **대용량 데이터 스트리밍과 PostgreSQL COPY 파이프라인 튜닝 실무**
+
+---
+
+## 📈 GitHub Activity & Stats
+
+<div align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=junho0831&show_icons=true&theme=tokyonight&hide_border=true&count_private=true" height="150" alt="GitHub Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=junho0831&layout=compact&theme=tokyonight&hide_border=true" height="150" alt="Top Languages" />
+</div>
 
 ---
 
